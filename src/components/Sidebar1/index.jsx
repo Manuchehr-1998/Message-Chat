@@ -4,33 +4,51 @@ import { MenuItem, Menu, Sidebar, sidebarClasses } from "react-pro-sidebar";
 import { useNavigate } from "react-router-dom";
 import { destroyToken } from "utils/GlobalRequest";
 import { Badge } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setProfileSidebarOpen, setShowMessages } from "Reduser/ChatReduser";
+import "./style.css";
+import Icon from "components/svg/Icon";
+import MessagesIcon from "components/svg/MessagesIcon";
+import MenuIcon from "components/svg/MenuIcon";
 
 export default function Sidebar1({ ...props }) {
-  const rooms = useSelector(({ chatSlice }) => chatSlice.rooms);
+  const rooms = useSelector(({ chatSlice }) => chatSlice.rooms || []);
   const roomId = useSelector(({ chatSlice }) => chatSlice.roomID);
+
+  const dispatch = useDispatch();
+
+  const dataBoocking = useSelector(({ chatSlice }) => chatSlice.isBooked);
+  console.log("dataBoocking", dataBoocking);
+
+  const showMessages = useSelector(({ chatSlice }) => chatSlice.showMessages);
+  const profileSidebarOpen = useSelector(
+    ({ chatSlice }) => chatSlice.profileSidebarOpen
+  );
+
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const [showMessages, setShowMessages] = useState(false);
-  const [profileSidebarOpen, setProfileSidebarOpen] = useState(false);
+
+  // const [showMessages, setShowMessages] = useState(false);
+  // const [profileSidebarOpen, setProfileSidebarOpen] = useState(false);
   const [hamburgerOpen, setHamburgerOpen] = useState(false);
 
-  const currentRoom = rooms[0] || {};
+  // console.log("showMessages", showMessages);
 
   const toggleMessages = () => {
-    setShowMessages(!showMessages);
-    setProfileSidebarOpen(false);
+    dispatch(setShowMessages(!showMessages));
+
+    dispatch(setProfileSidebarOpen(false));
   };
 
-  // Toggle profile sidebar visibility
   const toggleProfile = () => {
-    setProfileSidebarOpen(!profileSidebarOpen);
-    setShowMessages(false); // Close the message sidebar when opening profile
+    dispatch(setProfileSidebarOpen(!profileSidebarOpen));
+    dispatch(setShowMessages(false));
+    navigate("/");
   };
 
   // Close both sidebars
   const closeSidebars = () => {
-    setShowMessages(false);
+    dispatch(setShowMessages(false));
     setProfileSidebarOpen(false);
   };
 
@@ -38,6 +56,8 @@ export default function Sidebar1({ ...props }) {
   const toggleHamburger = () => {
     setHamburgerOpen(!hamburgerOpen);
   };
+
+  console.log("rooms", rooms);
 
   return (
     <div className="flex">
@@ -47,15 +67,18 @@ export default function Sidebar1({ ...props }) {
         width="312px !important"
         collapsedWidth="80px !important"
         collapsed={collapsed || !hamburgerOpen}
-        className="flex bg-[#EBECEE] flex-col h-screen pt-[26px] gap-[42px] top-0 sm:pt-4 shadow-sm !sticky overflow-auto md:hidden transition-all duration-300 ease-in-out"
+        className="flex bg-[#EBECEE] flex-col h-screen pt-[26px] gap-[42px] top-0 sm:pt-4 shadow-sm !sticky overflow-auto transition-all duration-300 ease-in-out"
       >
         <div className="flex flex-col justify-center items-center gap-2">
-          <div className="flex md:hidden p-4" onClick={toggleHamburger}>
+          <div className="flex p-4" onClick={toggleHamburger}>
             <button className="space-y-2">
               {hamburgerOpen ? (
-                <div className="relative w-6 h-6">
-                  <div className="w-6 h-1 bg-slate-900 transform rotate-45 absolute top-1/2 left-0 -translate-y-1/2"></div>
-                  <div className="w-6 h-1 bg-slate-900 transform -rotate-45 absolute top-1/2 left-0 -translate-y-1/2"></div>
+                <div className="flex gap-x-40 items-center justify-center">
+                  <img src="logo.svg" alt="logo" />
+                  <div className="relative w-6 h-6">
+                    <div className="w-6 h-1 bg-slate-900 transform rotate-45 absolute top-1/2 left-0 -translate-y-1/2"></div>
+                    <div className="w-6 h-1 bg-slate-900 transform -rotate-45 absolute top-1/2 left-0 -translate-y-1/2"></div>
+                  </div>
                 </div>
               ) : (
                 <>
@@ -67,13 +90,12 @@ export default function Sidebar1({ ...props }) {
             </button>
           </div>
           {hamburgerOpen && (
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
               <Heading
                 size="headings"
                 as="h2"
                 className="!font-poppins text-[26px] font-bold flex gap-x-3"
               >
-                <img src="logo.svg" alt="logo" />
                 <span>STANDART MOLIYA</span>
               </Heading>
             </div>
@@ -107,7 +129,6 @@ export default function Sidebar1({ ...props }) {
               borderRadius: "30px",
               [`&:hover, &.ps-active`]: {
                 backgroundColor: "#EBECEE !important",
-                padding: "10px",
                 boxShadow: "14px 17px 40px 4px #7090b014",
                 transition: "all 0.3s ease",
               },
@@ -116,7 +137,6 @@ export default function Sidebar1({ ...props }) {
           rootStyles={{ ["&>ul"]: { gap: "400px" } }}
           className="flex w-full flex-col self-stretch px-[26px] sm:px-5"
         >
-          {/* Menu items with text (for expanded sidebar) */}
           {hamburgerOpen && (
             <div className="flex flex-wrap gap-2">
               <Menu
@@ -124,16 +144,7 @@ export default function Sidebar1({ ...props }) {
                 onClick={toggleMessages}
               >
                 <div className="flex gap-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    width="26"
-                    height="25"
-                    viewBox="0 0 32 32"
-                  >
-                    <path d="M 16 3 C 12.210938 3 8.765625 4.113281 6.21875 5.976563 C 3.667969 7.835938 2 10.507813 2 13.5 C 2 17.128906 4.472656 20.199219 8 22.050781 L 8 29 L 14.746094 23.9375 C 15.15625 23.96875 15.570313 24 16 24 C 19.789063 24 23.234375 22.886719 25.78125 21.027344 C 28.332031 19.164063 30 16.492188 30 13.5 C 30 10.507813 28.332031 7.835938 25.78125 5.976563 C 23.234375 4.113281 19.789063 3 16 3 Z M 16 5 C 19.390625 5 22.445313 6.015625 24.601563 7.589844 C 26.757813 9.164063 28 11.246094 28 13.5 C 28 15.753906 26.757813 17.835938 24.601563 19.410156 C 22.445313 20.984375 19.390625 22 16 22 C 15.507813 22 15.015625 21.972656 14.523438 21.925781 L 14.140625 21.894531 L 10 25 L 10 20.859375 L 9.421875 20.59375 C 6.070313 19.019531 4 16.386719 4 13.5 C 4 11.246094 5.242188 9.164063 7.398438 7.589844 C 9.554688 6.015625 12.609375 5 16 5 Z"></path>
-                  </svg>
+                  <MessagesIcon />
                   <h1>Message</h1>
                 </div>
               </Menu>
@@ -153,23 +164,13 @@ export default function Sidebar1({ ...props }) {
             </div>
           )}
 
-          {/* Menu items with icons (for collapsed sidebar) */}
           {!hamburgerOpen && (
             <div className="flex flex-wrap gap-2">
               <Menu
                 className="hover:bg-[#315266] hover:p-2 hover:rounded-md hover:text-white-a700"
                 onClick={toggleMessages}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  x="0px"
-                  y="0px"
-                  width="26"
-                  height="25"
-                  viewBox="0 0 32 32"
-                >
-                  <path d="M 16 3 C 12.210938 3 8.765625 4.113281 6.21875 5.976563 C 3.667969 7.835938 2 10.507813 2 13.5 C 2 17.128906 4.472656 20.199219 8 22.050781 L 8 29 L 14.746094 23.9375 C 15.15625 23.96875 15.570313 24 16 24 C 19.789063 24 23.234375 22.886719 25.78125 21.027344 C 28.332031 19.164063 30 16.492188 30 13.5 C 30 10.507813 28.332031 7.835938 25.78125 5.976563 C 23.234375 4.113281 19.789063 3 16 3 Z M 16 5 C 19.390625 5 22.445313 6.015625 24.601563 7.589844 C 26.757813 9.164063 28 11.246094 28 13.5 C 28 15.753906 26.757813 17.835938 24.601563 19.410156 C 22.445313 20.984375 19.390625 22 16 22 C 15.507813 22 15.015625 21.972656 14.523438 21.925781 L 14.140625 21.894531 L 10 25 L 10 20.859375 L 9.421875 20.59375 C 6.070313 19.019531 4 16.386719 4 13.5 C 4 11.246094 5.242188 9.164063 7.398438 7.589844 C 9.554688 6.015625 12.609375 5 16 5 Z"></path>
-                </svg>
+                <MenuIcon />
               </Menu>
               <Menu
                 className="hover:bg-[#315266] hover:p-2 hover:rounded-md hover:text-white-a700"
@@ -224,7 +225,7 @@ export default function Sidebar1({ ...props }) {
           collapsedWidth="80px"
           collapsed={false}
           rootStyles={{ [`.${sidebarClasses.container}`]: { gap: 42 } }}
-          className="flex bg-[#EBECEE] flex-col h-screen pt-[26px] gap-[42px] top-0 sm:pt-4 bg-white-a700 shadow-sm !sticky overflow-auto md:hidden transition-all duration-300 ease-in-out"
+          className="flex bg-[#EBECEE] flex-col h-screen pt-[26px] gap-[42px] top-0 sm:pt-4 bg-white-a700 shadow-sm !sticky overflow-auto  transition-all duration-300 ease-in-out"
         >
           <div className="mt-4 flex flex-col items-center gap-[30px] self-stretch">
             <Heading
@@ -236,18 +237,9 @@ export default function Sidebar1({ ...props }) {
                 onClick={closeSidebars}
                 className="text-[20px] font-semibold"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                  className="transition-all duration-300 ease-in-out" // Smooth transition for icon
-                >
-                  <path fill="none" d="M0 0h24v24H0z" />
-                  <path d="M19 11H7.41l5.29-5.29a1 1 0 1 0-1.42-1.42l-7 7a1 1 0 0 0 0 1.42l7 7a1 1 0 0 0 1.42-1.42L7.41 13H19a1 1 0 0 0 0-2z" />
-                </svg>
+                <Icon />
               </button>
-              <span>Users Messages</span>
+              <span>Users</span>
             </Heading>
             <Img
               src="images/img_separator.svg"
@@ -261,21 +253,27 @@ export default function Sidebar1({ ...props }) {
                 color: "#1b2559",
                 fontWeight: 700,
                 fontSize: "16px",
-                borderRadius: "30px",
+                borderRadius: "10px",
+                padding: "10px",
+                marginBottom: "5px",
+                marginTop: "5px",
                 [`&:hover, &.ps-active`]: {
                   backgroundColor: "#EBECEE !important",
-                  padding: "10px",
                   boxShadow: "14px 17px 40px 4px #7090b014",
-                  transition: "all 0.3s ease", // Smooth transition
+                  transition: "all 0.3s ease",
+                  width: "100%",
                 },
               },
             }}
-            rootStyles={{ ["&>ul"]: { gap: "400px" } }}
-            className="flex w-full flex-col self-stretch px-[26px] sm:px-5"
+            className="px-2 w-full"
           >
-            {rooms?.map((el, i) => {
+            {rooms?.map((el) => {
               return (
-                <Badge key={el?.chat_room_id} count={el?.messageCount}>
+                <Badge
+                  key={el?.chat_room_id}
+                  count={el?.messageCount}
+                  className="w-full antBadge"
+                >
                   <MenuItem
                     onClick={() => {
                       navigate(
@@ -283,15 +281,22 @@ export default function Sidebar1({ ...props }) {
                       );
                     }}
                     active={el?.chat_room_id === roomId}
-                    icon={
-                      <Img
-                        src="images/img_auto_awesome_fi.svg"
-                        alt="Autoawesomefi"
-                        className="h-[22px] w-[24px]"
-                      />
-                    }
                   >
-                    <p>{currentRoom.client_data?.phone_number}</p>
+                    <span className="relative flex h-4 w-4 mx-2">
+                      {dataBoocking.find(
+                        (e) => e?.room_id === el?.chat_room_id
+                      ) ? (
+                        <>
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                        </>
+                      ) : null}
+                    </span>
+                    <p>
+                      {el?.client_data || null
+                        ? el.client_data.phone_number
+                        : "Неизвестно"}
+                    </p>
                   </MenuItem>
                 </Badge>
               );
@@ -306,7 +311,7 @@ export default function Sidebar1({ ...props }) {
           collapsedWidth="80px"
           collapsed={false}
           rootStyles={{ [`.${sidebarClasses.container}`]: { gap: 42 } }}
-          className="flex bg-[#EBECEE] flex-col h-screen pt-[26px] gap-[42px] top-0 sm:pt-4 bg-white-a700 shadow-sm !sticky overflow-auto md:hidden transition-all duration-300 ease-in-out"
+          className="flex bg-[#EBECEE] flex-col h-screen pt-[26px] gap-[42px] top-0 sm:pt-4 bg-white-a700 shadow-sm !sticky overflow-auto transition-all duration-300 ease-in-out"
         >
           <div className="mt-4 flex flex-col items-center gap-[30px] self-stretch">
             <Heading

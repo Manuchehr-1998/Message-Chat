@@ -1,6 +1,5 @@
 // features/newsSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 
 const chatSlice = createSlice({
   name: "chatSlice",
@@ -9,13 +8,33 @@ const chatSlice = createSlice({
     roomID: "",
     loading: false,
     error: null,
+    isBooked: [],
+    showMessages: false,
+    connectionStatus: "Disconnected",
+    profileSidebarOpen: false,
   },
   reducers: {
     setRooms: (state, action) => {
       state.rooms = action.payload;
     },
+    setShowMessages: (state, action) => {
+      console.log("redux", (state.showMessages = action.payload));
+
+      state.showMessages = action.payload;
+    },
+    setConnectionStatus: (state, action) => {
+      state.connectionStatus = action.payload;
+    },
+    setProfileSidebarOpen: (state, action) => {
+      state.profileSidebarOpen = action.payload;
+    },
     setRoomID: (state, action) => {
       state.roomID = action.payload;
+    },
+    setBoocking: (state, action) => {
+      // console.log("redux", (state.isBooked = action.payload));
+
+      state.isBooked = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -29,5 +48,13 @@ const chatSlice = createSlice({
 
 export default chatSlice.reducer;
 
-export const { setLoading, setError, setRoomID, setRooms } = chatSlice.actions;
-
+export const {
+  setLoading,
+  setError,
+  setRoomID,
+  setRooms,
+  setBoocking,
+  setShowMessages,
+  setConnectionStatus,
+  setProfileSidebarOpen,
+} = chatSlice.actions;

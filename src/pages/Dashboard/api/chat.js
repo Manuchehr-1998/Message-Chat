@@ -6,10 +6,24 @@ export const getRooms = async () => {
   return resp;
 };
 
-export const getChatHistory = async (roomId) => {
-  const resp = await privateApiRoute.get(`chat_history?room_id=${roomId}`);
+export const getChatHistory = async (roomId, offset, firstMessageId) => {
+  try {
+    const params = new URLSearchParams({
+      room_id: roomId,
+      limit: 20,
+      offset: offset,
+    });
 
-  return resp;
+    if (firstMessageId !== null && firstMessageId !== undefined) {
+      params.append("last_message", firstMessageId);
+    }
+
+    const resp = await privateApiRoute.get(`chat_history?${params.toString()}`);
+    return resp;
+  } catch (error) {
+    // console.error("Ошибка API-запроса:", error);
+    throw error;
+  }
 };
 
 export const sendMessageToChat = async (body) => {
@@ -17,6 +31,7 @@ export const sendMessageToChat = async (body) => {
 
   return resp;
 };
+
 export const postViewed = async (roomId) => {
   const resp = await privateApiRoute.post(`message/viewed?room_id=${roomId}`);
 

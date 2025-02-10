@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import NotFound from "pages/NotFound";
 import GlassEffectLoginPageBlue from "pages/Auth";
@@ -16,6 +16,7 @@ const ProjectRoutes = () => {
   //     childrens: [{ index: true, element: <ChatUIPageUser /> }],
   //   },
   // ]);
+  const [bookingState, setBookingState] = useState([]);
 
   return (
     <div>
@@ -23,7 +24,15 @@ const ProjectRoutes = () => {
         <Route index element={<GlassEffectLoginPageBlue />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/dashboard" element={<Layout />}>
-          <Route index element={<ChatUIPageUserPage />} />
+          <Route
+            index
+            element={
+              <ChatUIPageUserPage
+                bookingState={bookingState}
+                setBookingState={setBookingState}
+              />
+            }
+          />
         </Route>
       </Routes>
     </div>

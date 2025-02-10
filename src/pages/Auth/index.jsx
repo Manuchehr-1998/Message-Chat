@@ -44,7 +44,7 @@ export default function GlassEffectLoginPageBluePage() {
               >
                 <div className="flex flex-col items-start gap-2">
                   <div className="flex flex-col items-start gap-2 self-stretch">
-                    <Text as="p" className="text-[13px] font-normal text-black">
+                    <Text as="p" className="text-[14px] font-normal text-black">
                       Номер телефона
                     </Text>
 
@@ -58,7 +58,7 @@ export default function GlassEffectLoginPageBluePage() {
                         type="number"
                         name="Phone number"
                         placeholder={`992 ** *** ****`}
-                        className="w-full text-black self-stretch rounded-[5px] border-[0.71px] border-solid border-gray-400 px-4 font-gilroymedium"
+                        className="w-full text-[#000] self-stretch rounded-[5px] border-[0.71px] border-solid border-gray-400 px-4 font-gilroymedium"
                       />
                     </Form.Item>
                   </div>
@@ -79,15 +79,15 @@ export default function GlassEffectLoginPageBluePage() {
                           
                           `}
                         suffix={
-                          <div className="flex h-[10px] w-[10px] items-center justify-center rounded-bl rounded-br-[5px] rounded-tl rounded-tr-[5px]">
+                          <div className="flex   h-[10px] text-[#000] w-[10px] items-center justify-center rounded-bl rounded-br-[5px] rounded-tl rounded-tr-[5px]">
                             <Img
                               src="images/img_clarityeyehideline.svg"
                               alt="Clarity:eye-hide-line"
-                              className="my-0.5 h-[10px] w-[10px] rounded-bl rounded-br-[5px] rounded-tl rounded-tr-[5px] object-contain"
+                              className="my-0.5 h-[10px] text-[#000]w-[10px] rounded-bl rounded-br-[5px] rounded-tl rounded-tr-[5px] object-contain"
                             />
                           </div>
                         }
-                        className="gap-4 text-black self-stretch rounded-[5px] border-[0.71px] border-solid border-gray-400 px-4 font-gilroymedium"
+                        className="gap-4 text-[#000] self-stretch rounded-[5px] border-[0.71px] border-solid border-gray-400 px-4 font-gilroymedium"
                       />
                     </Form.Item>
                   </div>

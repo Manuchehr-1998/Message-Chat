@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 const Layout = () => {
   return (
     <div className="grid grid-cols-[auto_1fr]">
-      <div>
+      <div className="w-full">
         <Sidebar1 />
       </div>
       <div>

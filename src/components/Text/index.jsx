@@ -5,11 +5,20 @@ const sizes = {
   texts: "text-[24px] font-normal lg:text-[20px] md:text-[22px]",
 };
 
-const Text = ({ children, className = "", as, size = "textxs", ...restProps }) => {
+const Text = ({
+  children,
+  className = "",
+  as,
+  size = "textxs",
+  ...restProps
+}) => {
   const Component = as || "p";
 
   return (
-    <Component className={`text-white-a700 font-gilroymedium ${className} ${sizes[size]} `} {...restProps}>
+    <Component
+      className={`font-gilroymedium ${className} ${sizes[size]} `}
+      {...restProps}
+    >
       {children}
     </Component>
   );
